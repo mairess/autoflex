@@ -55,7 +55,7 @@ public class ProductController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ProductResponseDto createProduct(@RequestBody ProductCreationDto productCreationDto)
+  public ProductResponseDto create(@RequestBody ProductCreationDto productCreationDto)
       throws ProductAlreadyExistsException, RawMaterialNotFoundException {
     Product product = new Product();
     product.setCode(productCreationDto.code());
@@ -77,7 +77,7 @@ public class ProductController {
     }
     product.setRawMaterials(list);
     return ProductResponseDto.fromEntity(
-        productService.createProduct(product)
+        productService.create(product)
     );
   }
 

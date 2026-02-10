@@ -37,7 +37,7 @@ public class ProductService {
    * @return the product
    * @throws ProductAlreadyExistsException the product already exists exception
    */
-  public Product createProduct(Product product) throws ProductAlreadyExistsException {
+  public Product create(Product product) throws ProductAlreadyExistsException {
     if (productRepository.existsByCode(product.getCode())) {
       throw new ProductAlreadyExistsException();
     }
