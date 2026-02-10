@@ -10,8 +10,8 @@ public class ProductAlreadyExistsException extends Exception {
    *
    * @param message the message
    */
-  public ProductAlreadyExistsException(String message) {
-    super(message);
+  public ProductAlreadyExistsException() {
+    super("Product code already exists!");
   }
 
 }

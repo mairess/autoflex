@@ -3,6 +3,7 @@ package com.autoflex.backend.controller;
 import com.autoflex.backend.controller.dto.ProductCreationDto;
 import com.autoflex.backend.controller.dto.ProductRawMaterialCreationDto;
 import com.autoflex.backend.controller.dto.ProductResponseDto;
+import com.autoflex.backend.controller.dto.ProductionSuggestionDto;
 import com.autoflex.backend.entity.Product;
 import com.autoflex.backend.entity.ProductRawMaterial;
 import com.autoflex.backend.entity.RawMaterial;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,7 +65,8 @@ public class ProductController {
     List<ProductRawMaterial> list = new ArrayList<>();
 
     for (ProductRawMaterialCreationDto productRawMaterialCreationDto : productCreationDto.rawMaterials()) {
-      RawMaterial rawMaterial = rawMaterialService.findById(productRawMaterialCreationDto.rawMaterialId());
+      RawMaterial rawMaterial = rawMaterialService.findById(
+          productRawMaterialCreationDto.rawMaterialId());
 
       ProductRawMaterial productRawMaterial = new ProductRawMaterial(
           product,
@@ -78,4 +81,13 @@ public class ProductController {
     );
   }
 
+  /**
+   * Suggestions list.
+   *
+   * @return the list
+   */
+  @GetMapping("/production-suggestions")
+  public List<ProductionSuggestionDto> suggestions() {
+    return productService.getProductionSuggestions();
+  }
 }
