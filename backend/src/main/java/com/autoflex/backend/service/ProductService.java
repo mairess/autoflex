@@ -1,10 +1,15 @@
 package com.autoflex.backend.service;
 
+import com.autoflex.backend.controller.dto.ProductCreationDto;
+import com.autoflex.backend.controller.dto.ProductRawMaterialCreationDto;
 import com.autoflex.backend.controller.dto.ProductionSuggestionDto;
 import com.autoflex.backend.entity.Product;
 import com.autoflex.backend.entity.ProductRawMaterial;
+import com.autoflex.backend.entity.RawMaterial;
 import com.autoflex.backend.repository.ProductRepository;
 import com.autoflex.backend.service.exception.ProductAlreadyExistsException;
+import com.autoflex.backend.service.exception.ProductNotFoundException;
+import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -19,14 +24,17 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final RawMaterialService rawMaterialService;
 
   /**
    * Instantiates a new Product service.
    *
    * @param productRepository the product repository
    */
-  public ProductService(ProductRepository productRepository) {
+  public ProductService(ProductRepository productRepository,
+      RawMaterialService rawMaterialService) {
     this.productRepository = productRepository;
+    this.rawMaterialService = rawMaterialService;
   }
 
 
@@ -48,6 +56,58 @@ public class ProductService {
       }
     }
     return productRepository.save(product);
+  }
+
+  public List<Product> findAll() {
+    return productRepository.findAllWithMaterials();
+  }
+
+  public Product findById(Long id) throws ProductNotFoundException {
+    return productRepository.findById(id)
+        .orElseThrow(ProductNotFoundException::new);
+  }
+
+  public void delete(Long id) throws ProductNotFoundException {
+    Product existing = findById(id);
+    productRepository.delete(existing);
+  }
+
+  public Product update(Long id, ProductCreationDto productCreationDto)
+      throws ProductNotFoundException, ProductAlreadyExistsException, RawMaterialNotFoundException {
+
+    Product existing = findById(id);
+
+    // 1) valida code duplicado
+    if (!existing.getCode().equals(productCreationDto.code()) && productRepository.existsByCode(
+        productCreationDto.code())) {
+      throw new ProductAlreadyExistsException();
+    }
+
+    existing.setCode(productCreationDto.code());
+    existing.setName(productCreationDto.name());
+    existing.setPrice(productCreationDto.price());
+
+    existing.getRawMaterials().clear();
+
+    List<ProductRawMaterial> newList = new ArrayList<>();
+
+    for (ProductRawMaterialCreationDto productRawMaterialCreationDto : productCreationDto.rawMaterials()) {
+
+      RawMaterial rawMaterial = rawMaterialService.findById(
+          productRawMaterialCreationDto.rawMaterialId());
+
+      ProductRawMaterial prm = new ProductRawMaterial(
+          existing,
+          rawMaterial,
+          productRawMaterialCreationDto.requiredQuantity()
+      );
+
+      newList.add(prm);
+    }
+
+    existing.setRawMaterials(newList);
+
+    return productRepository.save(existing);
   }
 
   /**

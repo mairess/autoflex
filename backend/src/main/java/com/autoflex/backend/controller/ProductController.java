@@ -10,13 +10,17 @@ import com.autoflex.backend.entity.RawMaterial;
 import com.autoflex.backend.service.ProductService;
 import com.autoflex.backend.service.RawMaterialService;
 import com.autoflex.backend.service.exception.ProductAlreadyExistsException;
+import com.autoflex.backend.service.exception.ProductNotFoundException;
 import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -79,6 +83,33 @@ public class ProductController {
     return ProductResponseDto.fromEntity(
         productService.create(product)
     );
+  }
+
+  @GetMapping
+  public List<ProductResponseDto> findAll() {
+    return productService.findAll().stream().map(ProductResponseDto::fromEntity).toList();
+  }
+
+  @GetMapping("/{id}")
+  public ProductResponseDto findById(@PathVariable Long id)
+      throws ProductNotFoundException {
+    return ProductResponseDto.fromEntity(productService.findById(id));
+  }
+
+  @PutMapping("/{id}")
+  public ProductResponseDto update(
+      @PathVariable Long id,
+      @RequestBody ProductCreationDto dto
+  ) throws ProductNotFoundException, ProductAlreadyExistsException, RawMaterialNotFoundException {
+
+    Product updated = productService.update(id, dto);
+    return ProductResponseDto.fromEntity(updated);
+  }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable Long id) throws ProductNotFoundException {
+    productService.delete(id);
   }
 
   /**
