@@ -1,18 +1,13 @@
 package com.autoflex.backend.controller;
 
 import com.autoflex.backend.controller.dto.ProductCreationDto;
-import com.autoflex.backend.controller.dto.ProductRawMaterialCreationDto;
 import com.autoflex.backend.controller.dto.ProductResponseDto;
 import com.autoflex.backend.controller.dto.ProductionSuggestionDto;
 import com.autoflex.backend.entity.Product;
-import com.autoflex.backend.entity.ProductRawMaterial;
-import com.autoflex.backend.entity.RawMaterial;
 import com.autoflex.backend.service.ProductService;
-import com.autoflex.backend.service.RawMaterialService;
 import com.autoflex.backend.service.exception.ProductAlreadyExistsException;
 import com.autoflex.backend.service.exception.ProductNotFoundException;
 import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,23 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
   private final ProductService productService;
-  private final RawMaterialService rawMaterialService;
 
   /**
    * Instantiates a new Product controller.
    *
-   * @param productService     the product service
-   * @param rawMaterialService the raw material service
+   * @param productService the product service
    */
   @Autowired
-  public ProductController(ProductService productService,
-      RawMaterialService rawMaterialService) {
+  public ProductController(ProductService productService) {
     this.productService = productService;
-    this.rawMaterialService = rawMaterialService;
   }
 
   /**
-   * Create product product response dto.
+   * Create product response dto.
    *
    * @param productCreationDto the product creation dto
    * @return the product response dto
@@ -61,41 +52,43 @@ public class ProductController {
   @ResponseStatus(HttpStatus.CREATED)
   public ProductResponseDto create(@RequestBody ProductCreationDto productCreationDto)
       throws ProductAlreadyExistsException, RawMaterialNotFoundException {
-    Product product = new Product();
-    product.setCode(productCreationDto.code());
-    product.setName(productCreationDto.name());
-    product.setPrice(productCreationDto.price());
 
-    List<ProductRawMaterial> list = new ArrayList<>();
-
-    for (ProductRawMaterialCreationDto productRawMaterialCreationDto : productCreationDto.rawMaterials()) {
-      RawMaterial rawMaterial = rawMaterialService.findById(
-          productRawMaterialCreationDto.rawMaterialId());
-
-      ProductRawMaterial productRawMaterial = new ProductRawMaterial(
-          product,
-          rawMaterial,
-          productRawMaterialCreationDto.requiredQuantity()
-      );
-      list.add(productRawMaterial);
-    }
-    product.setRawMaterials(list);
-    return ProductResponseDto.fromEntity(
-        productService.create(product)
-    );
+    return ProductResponseDto.fromEntity(productService.create(productCreationDto));
   }
 
+  /**
+   * Find all list.
+   *
+   * @return the list
+   */
   @GetMapping
   public List<ProductResponseDto> findAll() {
     return productService.findAll().stream().map(ProductResponseDto::fromEntity).toList();
   }
 
+  /**
+   * Find by id product response dto.
+   *
+   * @param id the id
+   * @return the product response dto
+   * @throws ProductNotFoundException the product not found exception
+   */
   @GetMapping("/{id}")
   public ProductResponseDto findById(@PathVariable Long id)
       throws ProductNotFoundException {
     return ProductResponseDto.fromEntity(productService.findById(id));
   }
 
+  /**
+   * Update product response dto.
+   *
+   * @param id  the id
+   * @param dto the dto
+   * @return the product response dto
+   * @throws ProductNotFoundException      the product not found exception
+   * @throws ProductAlreadyExistsException the product already exists exception
+   * @throws RawMaterialNotFoundException  the raw material not found exception
+   */
   @PutMapping("/{id}")
   public ProductResponseDto update(
       @PathVariable Long id,
@@ -106,6 +99,12 @@ public class ProductController {
     return ProductResponseDto.fromEntity(updated);
   }
 
+  /**
+   * Delete.
+   *
+   * @param id the id
+   * @throws ProductNotFoundException the product not found exception
+   */
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(@PathVariable Long id) throws ProductNotFoundException {
