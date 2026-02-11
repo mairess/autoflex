@@ -66,7 +66,8 @@ public class RawMaterialService {
    * @param id   the id
    * @param data the data
    * @return the raw material
-   * @throws RawMaterialNotFoundException the raw material not found exception
+   * @throws RawMaterialNotFoundException      the raw material not found exception
+   * @throws RawMaterialAlreadyExistsException the raw material already exists exception
    */
   public RawMaterial update(Long id, RawMaterial data)
       throws RawMaterialNotFoundException, RawMaterialAlreadyExistsException {

@@ -89,7 +89,8 @@ public class RawMaterialController {
    * @param id  the id
    * @param dto the dto
    * @return the raw material response dto
-   * @throws RawMaterialNotFoundException the raw material not found exception
+   * @throws RawMaterialNotFoundException      the raw material not found exception
+   * @throws RawMaterialAlreadyExistsException the raw material already exists exception
    */
   @PutMapping("/{id}")
   public RawMaterialResponseDto update(

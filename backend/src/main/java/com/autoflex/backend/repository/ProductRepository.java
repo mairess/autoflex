@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   boolean existsByCode(String code);
 
   /**
-   * Find all with materials list.
+   * Find all with raw materials list.
    *
    * @return the list
    */

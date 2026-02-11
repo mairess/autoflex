@@ -83,8 +83,8 @@ public class ProductController {
   /**
    * Update product response dto.
    *
-   * @param id  the id
-   * @param dto the dto
+   * @param id                 the id
+   * @param productCreationDto the product creation dto
    * @return the product response dto
    * @throws ProductNotFoundException      the product not found exception
    * @throws ProductAlreadyExistsException the product already exists exception

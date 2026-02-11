@@ -19,12 +19,21 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type Product service.
+ */
 @Service
 public class ProductService {
 
   private final ProductRepository productRepository;
   private final RawMaterialService rawMaterialService;
 
+  /**
+   * Instantiates a new Product service.
+   *
+   * @param productRepository  the product repository
+   * @param rawMaterialService the raw material service
+   */
   public ProductService(ProductRepository productRepository,
       RawMaterialService rawMaterialService) {
     this.productRepository = productRepository;
@@ -32,6 +41,13 @@ public class ProductService {
   }
 
 
+  /**
+   * Create product.
+   *
+   * @param productCreationDto the product creation dto
+   * @return the product
+   * @throws RawMaterialNotFoundException the raw material not found exception
+   */
   public Product create(ProductCreationDto productCreationDto)
       throws RawMaterialNotFoundException {
 
@@ -67,20 +83,48 @@ public class ProductService {
     return productRepository.save(product);
   }
 
+  /**
+   * Find all list.
+   *
+   * @return the list
+   */
   public List<Product> findAll() {
     return productRepository.findAllWithRawMaterials();
   }
 
+  /**
+   * Find by id product.
+   *
+   * @param id the id
+   * @return the product
+   * @throws ProductNotFoundException the product not found exception
+   */
   public Product findById(Long id) throws ProductNotFoundException {
     return productRepository.findById(id)
         .orElseThrow(ProductNotFoundException::new);
   }
 
+  /**
+   * Delete.
+   *
+   * @param id the id
+   * @throws ProductNotFoundException the product not found exception
+   */
   public void delete(Long id) throws ProductNotFoundException {
     Product existing = findById(id);
     productRepository.delete(existing);
   }
 
+  /**
+   * Update product.
+   *
+   * @param id                 the id
+   * @param productCreationDto the product creation dto
+   * @return the product
+   * @throws ProductNotFoundException      the product not found exception
+   * @throws ProductAlreadyExistsException the product already exists exception
+   * @throws RawMaterialNotFoundException  the raw material not found exception
+   */
   public Product update(Long id, ProductCreationDto productCreationDto)
       throws ProductNotFoundException, ProductAlreadyExistsException, RawMaterialNotFoundException {
 
@@ -123,6 +167,11 @@ public class ProductService {
     return productRepository.save(existing);
   }
 
+  /**
+   * Gets production suggestions.
+   *
+   * @return the production suggestions
+   */
   public List<ProductionSuggestionDto> getProductionSuggestions() {
 
     List<Product> products = productRepository.findAllWithRawMaterials();
