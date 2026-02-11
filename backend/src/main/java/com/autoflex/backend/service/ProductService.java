@@ -56,27 +56,28 @@ public class ProductService {
     product.setName(productCreationDto.name());
     product.setPrice(productCreationDto.price());
 
-    List<ProductRawMaterial> list = new ArrayList<>();
+    List<ProductRawMaterial> productRawMaterialList = new ArrayList<>();
 
     if (productCreationDto.rawMaterials() != null) {
 
-      for (ProductRawMaterialCreationDto item : productCreationDto.rawMaterials()) {
+      for (ProductRawMaterialCreationDto productRawMaterialCreationDto : productCreationDto.rawMaterials()) {
 
-        RawMaterial rawMaterial = rawMaterialService.findById(item.rawMaterialId());
+        RawMaterial rawMaterial = rawMaterialService.findById(
+            productRawMaterialCreationDto.rawMaterialId());
 
         ProductRawMaterial productRawMaterial = new ProductRawMaterial(
             product,
             rawMaterial,
-            item.requiredQuantity()
+            productRawMaterialCreationDto.requiredQuantity()
         );
 
-        list.add(productRawMaterial);
+        productRawMaterialList.add(productRawMaterial);
       }
     }
 
-    product.setRawMaterials(list);
+    product.setRawMaterials(productRawMaterialList);
 
-    for (ProductRawMaterial productRawMaterial : list) {
+    for (ProductRawMaterial productRawMaterial : productRawMaterialList) {
       productRawMaterial.setProduct(product);
     }
 
