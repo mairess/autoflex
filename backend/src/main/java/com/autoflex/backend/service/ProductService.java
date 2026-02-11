@@ -10,6 +10,7 @@ import com.autoflex.backend.repository.ProductRepository;
 import com.autoflex.backend.service.exception.ProductAlreadyExistsException;
 import com.autoflex.backend.service.exception.ProductNotFoundException;
 import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -46,10 +47,16 @@ public class ProductService {
    *
    * @param productCreationDto the product creation dto
    * @return the product
-   * @throws RawMaterialNotFoundException the raw material not found exception
+   * @throws RawMaterialNotFoundException  the raw material not found exception
+   * @throws ProductAlreadyExistsException the product already exists exception
    */
+  @Transactional
   public Product create(ProductCreationDto productCreationDto)
-      throws RawMaterialNotFoundException {
+      throws RawMaterialNotFoundException, ProductAlreadyExistsException {
+
+    if (productRepository.existsByCode(productCreationDto.code())) {
+      throw new ProductAlreadyExistsException();
+    }
 
     Product product = new Product();
     product.setCode(productCreationDto.code());
