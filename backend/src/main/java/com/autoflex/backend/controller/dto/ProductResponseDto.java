@@ -10,7 +10,7 @@ public record ProductResponseDto(
     String code,
     String name,
     BigDecimal price,
-    List<ProductRawMaterial> rawMaterials
+    List<ProductRawMaterialResponseDto> rawMaterials
 ) {
 
   public static ProductResponseDto fromEntity(Product product) {
@@ -19,7 +19,12 @@ public record ProductResponseDto(
         product.getCode(),
         product.getName(),
         product.getPrice(),
-        product.getRawMaterials()
+        product.getRawMaterials() == null
+            ? List.of()
+            : product.getRawMaterials()
+                .stream()
+                .map(ProductRawMaterialResponseDto::fromEntity)
+                .toList()
     );
   }
 }

@@ -1,6 +1,7 @@
 package com.autoflex.backend.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +25,7 @@ public class ProductRawMaterial {
   @JoinColumn(name = "product_id")
   private Product product;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "raw_material_id")
   private RawMaterial rawMaterial;
 
@@ -36,14 +37,12 @@ public class ProductRawMaterial {
   /**
    * Instantiates a new Product raw material.
    *
-   * @param id               the id
    * @param product          the product
    * @param rawMaterial      the raw material
    * @param requiredQuantity the required quantity
    */
-  public ProductRawMaterial(Long id, Product product, RawMaterial rawMaterial,
+  public ProductRawMaterial(Product product, RawMaterial rawMaterial,
       BigDecimal requiredQuantity) {
-    this.id = id;
     this.product = product;
     this.rawMaterial = rawMaterial;
     this.requiredQuantity = requiredQuantity;
