@@ -119,7 +119,6 @@ public class ProductController {
    */
   @GetMapping("/production-suggestions")
   public List<ProductionSuggestionDto> suggestions() {
-    System.out.println("asdad");
     return productService.getProductionSuggestions();
   }
 }
