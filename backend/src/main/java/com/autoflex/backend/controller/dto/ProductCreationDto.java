@@ -1,5 +1,6 @@
 package com.autoflex.backend.controller.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ public record ProductCreationDto(
     BigDecimal price,
 
     @NotEmpty(message = "Product must have at least one raw material")
+    @Valid
     List<ProductRawMaterialCreationDto> rawMaterials
 ) {
 
