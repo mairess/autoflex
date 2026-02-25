@@ -31,7 +31,7 @@ public class ProductRawMaterial {
 
   private BigDecimal requiredQuantity;
 
-  private ProductRawMaterial() {
+  public ProductRawMaterial() {
   }
 
   /**
