@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { deleteProduct, fetchProducts } from "../store/slices/productSlice";
 import ProductForm from "../components/Product/ProductForm";
 import type { ProductResponseType } from "../types/product";
+import { fetchRawMaterials } from "../store/slices/rawMaterialSlice";
 
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,7 @@ const ProductsPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchRawMaterials());
   }, [dispatch]);
 
   return (
