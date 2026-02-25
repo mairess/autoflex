@@ -5,7 +5,7 @@ import { fetchRawMaterials } from "../store/slices/rawMaterialSlice";
 import RawMaterialForm from "../components/RawMaterials/RawMaterialForm";
 import RawMaterialItem from "../components/RawMaterials/RawMaterialItem";
 
-const RawMaterialsPage = () => {
+const RawMaterialsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((s) => s.rawMaterials);
 

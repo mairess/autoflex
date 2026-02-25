@@ -10,16 +10,13 @@ const Header: React.FC = () => {
 
         <nav className="flex gap-6 text-gray-600 font-medium">
           <Link to="/" className="hover:text-blue-600 transition">
-            Dashboard
+            Raw Materials
           </Link>
-          <Link to="/inventory" className="hover:text-blue-600 transition">
-            Inventory
+          <Link to="/products" className="hover:text-blue-600 transition">
+            Products
           </Link>
           <Link to="/production" className="hover:text-blue-600 transition">
             Production
-          </Link>
-          <Link to="/raw-materials" className="hover:text-blue-600 transition">
-            Raw Materials
           </Link>
         </nav>
       </div>

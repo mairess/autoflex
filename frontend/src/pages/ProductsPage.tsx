@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchProducts } from "../store/slices/productSlice";
 import ProductForm from "../components/Product/ProductForm";
 
-const ProductsPage = () => {
+const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((s) => s.products);
 
