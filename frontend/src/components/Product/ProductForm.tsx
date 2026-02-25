@@ -6,6 +6,7 @@ import { createProduct } from "../../store/slices/productSlice";
 const ProductForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const rawMaterials = useAppSelector((s) => s.rawMaterials.items);
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     code: "",
@@ -48,7 +49,31 @@ const ProductForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.code.trim()) {
+      setError("Code is required");
+      return;
+    }
+
+    if (!form.name.trim()) {
+      setError("Name is required");
+      return;
+    }
+
+    if (form.price <= 0) {
+      setError("Price must be greater than zero");
+      return;
+    }
+
+    if (form.rawMaterials.length === 0) {
+      setError("At least one raw material must be selected");
+      return;
+    }
+
+    setError(null);
+
     dispatch(createProduct(form));
+
     setForm({
       code: "",
       name: "",
@@ -62,22 +87,31 @@ const ProductForm: React.FC = () => {
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Code"
-        onChange={(e) => setForm({ ...form, code: e.target.value })}
+        onChange={(e) => {
+          setError(null);
+          setForm({ ...form, code: e.target.value });
+        }}
       />
 
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Name"
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        onChange={(e) => {
+          setError(null);
+          setForm({ ...form, name: e.target.value });
+        }}
       />
 
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         type="number"
+        min={0.01}
+        step="0.01"
         placeholder="Price"
-        onChange={(e) =>
-          setForm({ ...form, price: Number(e.target.value) })
-        }
+        onChange={(e) => {
+          setError(null);
+          setForm({ ...form, price: Number(e.target.value) });
+        }}
       />
 
       <h4>Available Raw Materials</h4>
@@ -110,7 +144,7 @@ const ProductForm: React.FC = () => {
               onChange={(e) =>
                 updateQuantity(
                   rm.rawMaterialId,
-                  Number(e.target.value),
+                  Math.max(1, Number(e.target.value)),
                 )
               }
             />
@@ -126,9 +160,18 @@ const ProductForm: React.FC = () => {
         );
       })}
 
-      <button 
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-        type="submit">Create Product</button>
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mt-4">
+          {error}
+        </div>
+      )}
+
+      <button
+        disabled={!form.code || !form.name || form.price <= 0 || form.rawMaterials.length === 0}
+        className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+        type="submit">
+          Create Product
+      </button>
     </form>
   );
 };
