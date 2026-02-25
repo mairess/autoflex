@@ -6,12 +6,22 @@ import type { RawMaterialResponseType } from "../../types/rawMaterial";
 
 interface RawMaterialItemProps {
   rawMaterial: RawMaterialResponseType;
+  onEdit: () => void;
 }
 
-const RawMaterialItem: React.FC<RawMaterialItemProps> = ({ rawMaterial }) => {
+const RawMaterialItem: React.FC<RawMaterialItemProps> = ({
+  rawMaterial,
+  onEdit,
+}) => {
   const dispatch = useAppDispatch();
 
   const handleDelete = () => {
+    const confirmed = confirm(
+      `Are you sure you want to delete "${rawMaterial.name}"?`,
+    );
+
+    if (!confirmed) return;
+
     dispatch(deleteRawMaterial(rawMaterial.id));
   };
 
@@ -22,16 +32,25 @@ const RawMaterialItem: React.FC<RawMaterialItemProps> = ({ rawMaterial }) => {
           {rawMaterial.name}
         </h3>
         <p className="text-sm text-gray-500">
-        Stock: {rawMaterial.stockQuantity}
+          Stock: {rawMaterial.stockQuantity}
         </p>
       </div>
 
-      <button
-        onClick={handleDelete}
-        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition"
-      >
-      Delete
-      </button>
+      <div className="flex gap-2">
+        <button
+          onClick={onEdit}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm"
+        >
+          Edit
+        </button>
+
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,18 +1,26 @@
 import React, { useState } from "react";
 
 import { useAppDispatch } from "../../store/hooks";
-import { createRawMaterial } from "../../store/slices/rawMaterialSlice";
+import { createRawMaterial, updateRawMaterial } from "../../store/slices/rawMaterialSlice";
+import type { RawMaterialCreationType, RawMaterialResponseType } from "../../types/rawMaterial";
 
-const RawMaterialForm: React.FC = () => {
+interface RawMaterialFormProps {
+  initialData?: RawMaterialResponseType;
+  onFinish?: () => void;
+}
+
+const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
+  initialData,
+  onFinish,
+}) => {
   const dispatch = useAppDispatch();
-
   const [error, setError] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
-    code: "",
-    name: "",
-    stockQuantity: 0,
-  });
+  const [form, setForm] = useState<RawMaterialCreationType>(() => ({
+    code: initialData?.code ?? "",
+    name: initialData?.name ?? "",
+    stockQuantity: initialData?.stockQuantity ?? 0,
+  }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +42,13 @@ const RawMaterialForm: React.FC = () => {
 
     setError(null);
 
-    dispatch(createRawMaterial(form));
+    if (initialData) {
+      dispatch(updateRawMaterial({ id: initialData.id, data: form }));
+    } else {
+      dispatch(createRawMaterial(form));
+    }
+
+    onFinish?.();
 
     setForm({
       code: "",
@@ -44,61 +58,46 @@ const RawMaterialForm: React.FC = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 bg-gray-50 p-4 rounded-lg border"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded-lg border">
       <input
-        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Code"
         value={form.code}
-        onChange={(e) => {
-          setError(null);
-          setForm({ ...form, code: e.target.value });
-        }}
+        onChange={(e) => setForm({ ...form, code: e.target.value })}
+        className="w-full border rounded-lg px-3 py-2"
       />
 
       <input
-        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Name"
         value={form.name}
-        onChange={(e) => {
-          setError(null);
-          setForm({ ...form, name: e.target.value });
-        }}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        className="w-full border rounded-lg px-3 py-2"
       />
 
       <input
         type="number"
         min={0}
-        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Stock Quantity"
         value={form.stockQuantity}
-        onChange={(e) => {
-          setError(null);
+        onChange={(e) =>
           setForm({
             ...form,
             stockQuantity: Math.max(0, Number(e.target.value)),
-          });
-        }}
+          })
+        }
+        className="w-full border rounded-lg px-3 py-2"
       />
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded">
           {error}
         </div>
       )}
 
       <button
         type="submit"
-        disabled={
-          !form.code.trim() ||
-          !form.name.trim() ||
-          form.stockQuantity < 0
-        }
-        className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
       >
-        Create Raw Material
+        {initialData ? "Update Raw Material" : "Create Raw Material"}
       </button>
     </form>
   );
