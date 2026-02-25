@@ -86,6 +86,7 @@ const ProductForm: React.FC = () => {
     <form onSubmit={handleSubmit}>
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        value={form.code}
         placeholder="Code"
         onChange={(e) => {
           setError(null);
@@ -95,6 +96,7 @@ const ProductForm: React.FC = () => {
 
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        value={form.name}
         placeholder="Name"
         onChange={(e) => {
           setError(null);
@@ -108,6 +110,7 @@ const ProductForm: React.FC = () => {
         min={0.01}
         step="0.01"
         placeholder="Price"
+        value={form.price}
         onChange={(e) => {
           setError(null);
           setForm({ ...form, price: Number(e.target.value) });
