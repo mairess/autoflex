@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+}

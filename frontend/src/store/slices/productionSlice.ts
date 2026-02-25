@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import * as productionService from "../../service/productionService";
-import type { ProductionSuggestionType } from "../../types//production";
+import type { ProductionSuggestionType } from "../../types/production";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 interface ProductionState {
   suggestions: ProductionSuggestionType[];
@@ -15,19 +16,27 @@ const initialState: ProductionState = {
   error: null,
 };
 
-export const fetchProductionSuggestion = createAsyncThunk(
-  "products/production-suggestions",
-  productionService.getProductionSuggestions,
-);
+export const fetchProductionSuggestion = createAsyncThunk<
+  ProductionSuggestionType[],
+  void,
+  { rejectValue: string }
+>("production/fetchSuggestions", async (_, { rejectWithValue }) => {
+  try {
+    return await productionService.getProductionSuggestions();
+  } catch (error: unknown) {
+    return rejectWithValue(getErrorMessage(error));
+  }
+});
 
 const productionSlice = createSlice({
-  name: "suggestions",
+  name: "production",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductionSuggestion.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchProductionSuggestion.fulfilled, (state, action) => {
         state.loading = false;
@@ -35,7 +44,7 @@ const productionSlice = createSlice({
       })
       .addCase(fetchProductionSuggestion.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Error loading plan";
+        state.error = action.payload ?? "Unexpected error";
       });
   },
 });
