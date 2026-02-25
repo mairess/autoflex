@@ -24,3 +24,8 @@ export type ProductResponseType = {
   price: number;
   rawMaterials: ProductRawMaterialResponseType[];
 };
+
+export type ProductRawMaterialFormType = {
+  rawMaterialId: number;
+  requiredQuantity: number;
+};
