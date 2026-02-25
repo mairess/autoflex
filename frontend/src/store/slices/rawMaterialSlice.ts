@@ -18,6 +18,19 @@ export const fetchRawMaterials = createAsyncThunk(
   rawMaterialService.getAllRawMaterials,
 );
 
+export const createRawMaterial = createAsyncThunk(
+  "rawMaterials/create",
+  rawMaterialService.createRawMaterial,
+);
+
+export const deleteRawMaterial = createAsyncThunk(
+  "rawMaterials/delete",
+  async (id: number) => {
+    await rawMaterialService.deleteRawMaterial(id);
+    return id;
+  },
+);
+
 const slice = createSlice({
   name: "rawMaterials",
   initialState,
@@ -30,6 +43,12 @@ const slice = createSlice({
       .addCase(fetchRawMaterials.fulfilled, (s, a) => {
         s.loading = false;
         s.items = a.payload;
+      }).addCase(createRawMaterial.fulfilled, (s, a) => {
+        s.items.push(a.payload);
+      }).addCase(deleteRawMaterial.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          (item) => item.id !== action.payload,
+        );
       });
   },
 });
