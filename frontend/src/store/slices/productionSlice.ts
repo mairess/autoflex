@@ -5,22 +5,22 @@ import type { ProductionSuggestionType } from "../../types/production";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 interface ProductionState {
-  suggestions: ProductionSuggestionType[];
+  items: ProductionSuggestionType[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ProductionState = {
-  suggestions: [],
+  items: [],
   loading: false,
   error: null,
 };
 
-export const fetchProductionSuggestion = createAsyncThunk<
+export const fetchProductionSuggestions = createAsyncThunk<
   ProductionSuggestionType[],
   void,
   { rejectValue: string }
->("production/fetchSuggestions", async (_, { rejectWithValue }) => {
+>("production/fetchAll", async (_, { rejectWithValue }) => {
   try {
     return await productionService.getProductionSuggestions();
   } catch (error: unknown) {
@@ -34,15 +34,15 @@ const productionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProductionSuggestion.pending, (state) => {
+      .addCase(fetchProductionSuggestions.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProductionSuggestion.fulfilled, (state, action) => {
+      .addCase(fetchProductionSuggestions.fulfilled, (state, action) => {
         state.loading = false;
-        state.suggestions = action.payload;
+        state.items = action.payload;
       })
-      .addCase(fetchProductionSuggestion.rejected, (state, action) => {
+      .addCase(fetchProductionSuggestions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Unexpected error";
       });
