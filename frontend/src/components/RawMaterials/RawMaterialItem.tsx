@@ -26,30 +26,37 @@ const RawMaterialItem: React.FC<RawMaterialItemProps> = ({
   };
 
   return (
-    <div className="border rounded-lg p-4 flex justify-between items-center shadow-sm hover:shadow-md transition">
-      <div>
-        <h3 className="font-semibold text-gray-800">
-          {rawMaterial.name}
-        </h3>
-        <p className="text-sm text-gray-500">
-          Stock: {rawMaterial.stockQuantity}
-        </p>
-      </div>
+    <div className="border rounded-xl p-6 bg-gray-50 shadow-sm hover:shadow-md transition">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div>
+          <p className="text-sm text-gray-500">
+        Code: {rawMaterial.code}
+          </p>
 
-      <div className="flex gap-2">
-        <button
-          onClick={onEdit}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm"
-        >
-          Edit
-        </button>
+          <h3 className="text-lg font-semibold text-gray-800">
+            {rawMaterial.name}
+          </h3>
 
-        <button
-          onClick={handleDelete}
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-        >
-          Delete
-        </button>
+          <p className="text-blue-600 font-bold mt-1">
+        Stock: {rawMaterial.stockQuantity}
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={onEdit}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+          >
+        Edit
+          </button>
+
+          <button
+            onClick={handleDelete}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+          >
+        Delete
+          </button>
+        </div>
       </div>
     </div>
   );

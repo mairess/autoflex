@@ -35,7 +35,7 @@ const ProductsPage: React.FC = () => {
         onFinish={() => setEditingProduct(null)}
       />
 
-      <div className="grid gap-6">
+      <div className="flex flex-col gap-6">
         {items.map((product) => (
           <div
             key={product.id}

@@ -114,11 +114,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-lg font-bold">
-        {initialData
-          ? `Editing: ${initialData.name}`
-          : "Create New Product"}
-      </h2>
+      {initialData && (
+        <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg">
+    Editing product:
+          <span className="font-semibold ml-2">
+            {initialData.name}
+          </span>
+        </div>
+      )}
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         value={form.code}
@@ -249,7 +252,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
               <button
                 type="button"
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition"
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition cursor-pointer"
                 onClick={() => removeMaterial(rm.rawMaterialId)}
               >
           Remove
@@ -267,7 +270,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div className="flex gap-3">
         <button
-          className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+          className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
           type="submit"
         >
           {initialData ? "Update Product" : "Create Product"}
@@ -280,7 +283,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               setForm(buildFormState());
               onFinish?.();
             }}
-            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg transition"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition border cursor-pointer"
           >
       Cancel
           </button>
