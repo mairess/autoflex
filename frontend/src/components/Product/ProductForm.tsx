@@ -67,8 +67,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     if (!form.code.trim()) {
       setError("Code is required");
@@ -92,15 +92,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     setError(null);
 
-    if (initialData) {
-      dispatch(updateProduct({ id: initialData.id, data: form }));
-    } else {
-      dispatch(createProduct(form));
+    try {
+      if (initialData) {
+        await dispatch(
+          updateProduct({ id: initialData.id, data: form }),
+        ).unwrap();
+      } else {
+        await dispatch(createProduct(form)).unwrap();
+      }
+
+      setError(null);
+
+      onFinish?.();
+      setForm(buildFormState());
+
+    } catch (error) {
+      setError(String(error));
     }
-
-    onFinish?.();
-
-    setForm(buildFormState());
   };
 
   return (
@@ -194,12 +202,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
       )}
 
       <button
-        disabled={
-          !form.code ||
-          !form.name ||
-          form.price <= 0 ||
-          form.rawMaterials.length === 0
-        }
         className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
         type="submit"
       >

@@ -22,8 +22,8 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
     stockQuantity: initialData?.stockQuantity ?? 0,
   }));
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     if (!form.code.trim()) {
       setError("Code is required");
@@ -42,19 +42,28 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
 
     setError(null);
 
-    if (initialData) {
-      dispatch(updateRawMaterial({ id: initialData.id, data: form }));
-    } else {
-      dispatch(createRawMaterial(form));
+    try {
+      if (initialData) {
+        await dispatch(
+          updateRawMaterial({ id: initialData.id, data: form }),
+        ).unwrap();
+      } else {
+        await dispatch(createRawMaterial(form)).unwrap();
+      }
+
+      setError(null);
+
+      onFinish?.();
+
+      setForm({
+        code: "",
+        name: "",
+        stockQuantity: 0,
+      });
+
+    } catch (error) {
+      setError(String(error));
     }
-
-    onFinish?.();
-
-    setForm({
-      code: "",
-      name: "",
-      stockQuantity: 0,
-    });
   };
 
   return (
