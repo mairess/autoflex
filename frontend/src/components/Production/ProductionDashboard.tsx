@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchProductionSuggestion } from "../../store/slices/productionSlice";
+import { fetchProductionSuggestions } from "../../store/slices/productionSlice";
 
 const ProductionDashboard: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { suggestions, loading } = useAppSelector((state) => state.production);
+  const { items, loading } = useAppSelector((state) => state.production);
 
   useEffect(() => {
-    dispatch(fetchProductionSuggestion());
+    dispatch(fetchProductionSuggestions());
   }, [dispatch]);
 
   return (
@@ -30,7 +30,7 @@ const ProductionDashboard: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {suggestions.map((item) => (
+            {items.map((item) => (
               <tr
                 key={item.productId}
                 className="border-t hover:bg-gray-50 transition"

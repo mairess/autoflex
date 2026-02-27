@@ -28,7 +28,7 @@ const RawMaterialsPage: React.FC = () => {
         onFinish={() => setEditingRawMaterial(null)}
       />
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="flex flex-col gap-6">
         {items.map((rm) => (
           <RawMaterialItem
             key={rm.id}

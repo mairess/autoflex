@@ -2,10 +2,7 @@ import React, { useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { createProduct, updateProduct } from "../../store/slices/productSlice";
-import type {
-  ProductRawMaterialFormType,
-  ProductResponseType,
-} from "../../types/product";
+import type { ProductRawMaterialFormType, ProductResponseType } from "../../types/product";
 
 interface ProductFormProps {
   initialData?: ProductResponseType;
@@ -30,10 +27,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const rawMaterials = useAppSelector((s) => s.rawMaterials.items);
-
   const [error, setError] = useState<string | null>(null);
-
+  const [search, setSearch] = useState("");
   const [form, setForm] = useState(() => buildFormState(initialData));
+
+  const filteredMaterials = rawMaterials.filter((rm) =>
+    rm.name.toLowerCase().includes(search.toLowerCase()) ||
+  rm.code.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const addMaterial = (id: number) => {
     if (form.rawMaterials.find((rm) => rm.rawMaterialId === id)) return;
@@ -67,8 +68,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     if (!form.code.trim()) {
       setError("Code is required");
@@ -92,19 +93,35 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     setError(null);
 
-    if (initialData) {
-      dispatch(updateProduct({ id: initialData.id, data: form }));
-    } else {
-      dispatch(createProduct(form));
+    try {
+      if (initialData) {
+        await dispatch(
+          updateProduct({ id: initialData.id, data: form }),
+        ).unwrap();
+      } else {
+        await dispatch(createProduct(form)).unwrap();
+      }
+
+      setError(null);
+
+      onFinish?.();
+      setForm(buildFormState());
+
+    } catch (error) {
+      setError(String(error));
     }
-
-    onFinish?.();
-
-    setForm(buildFormState());
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {initialData && (
+        <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg">
+    Editing product:
+          <span className="font-semibold ml-2">
+            {initialData.name}
+          </span>
+        </div>
+      )}
       <input
         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         value={form.code}
@@ -138,54 +155,112 @@ const ProductForm: React.FC<ProductFormProps> = ({
         }
       />
 
-      <h4 className="font-semibold">Available Raw Materials</h4>
+      <h4 className="font-semibold text-gray-700 mt-4">
+  Available Raw Materials
+      </h4>
 
-      {rawMaterials.map((rm) => (
-        <div key={rm.id}>
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-            onClick={() => addMaterial(rm.id)}
-          >
-            Add {rm.name}
-          </button>
+      <div className="space-y-3">
+
+        <input
+          type="text"
+          placeholder="Search by name or code..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+
+        <div className="max-h-48 overflow-y-auto border rounded-lg divide-y bg-white">
+
+          {filteredMaterials.map((rm) => {
+            const alreadySelected = form.rawMaterials.some(
+              (m) => m.rawMaterialId === rm.id,
+            );
+
+            return (
+              <div
+                key={rm.id}
+                className="flex justify-between items-center p-3 hover:bg-gray-50 transition"
+              >
+                <div>
+                  <p className="text-sm font-medium text-gray-800">
+                    {rm.code} - {rm.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+              Stock: {rm.stockQuantity}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={alreadySelected}
+                  onClick={() => addMaterial(rm.id)}
+                  className={`px-3 py-1 rounded-lg text-sm transition cursor-pointer ${
+                    alreadySelected
+                      ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}
+                >
+                  {alreadySelected ? "Added" : "Add"}
+                </button>
+              </div>
+            );
+          })}
+
+          {filteredMaterials.length === 0 && (
+            <p className="p-3 text-sm text-gray-500">
+        No materials found
+            </p>
+          )}
         </div>
-      ))}
+      </div>
 
       <h4 className="font-semibold">Selected Materials</h4>
 
-      {form.rawMaterials.map((rm) => {
-        const material = rawMaterials.find(
-          (r) => r.id === rm.rawMaterialId,
-        );
+      <div className="max-h-56 overflow-y-auto border rounded-lg divide-y bg-white">
+        {form.rawMaterials.length === 0 && (
+          <p className="p-3 text-sm text-gray-500">
+      No materials selected
+          </p>
+        )}
 
-        return (
-          <div key={rm.rawMaterialId} className="flex gap-3 items-center">
-            <span className="w-40">{material?.name}</span>
+        {form.rawMaterials.map((rm) => {
+          const material = rawMaterials.find(
+            (r) => r.id === rm.rawMaterialId,
+          );
 
-            <input
-              type="number"
-              min={1}
-              className="border rounded-lg px-2 py-1 w-24"
-              value={rm.requiredQuantity}
-              onChange={(e) =>
-                updateQuantity(
-                  rm.rawMaterialId,
-                  Math.max(1, Number(e.target.value)),
-                )
-              }
-            />
-
-            <button
-              type="button"
-              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition"
-              onClick={() => removeMaterial(rm.rawMaterialId)}
+          return (
+            <div
+              key={rm.rawMaterialId}
+              className="flex justify-between items-center p-3"
             >
-              Remove
-            </button>
-          </div>
-        );
-      })}
+              <span className="w-40 text-sm">
+                {material?.name}
+              </span>
+
+              <input
+                type="number"
+                min={1}
+                className="border rounded-lg px-2 py-1 w-24"
+                value={rm.requiredQuantity}
+                onChange={(e) =>
+                  updateQuantity(
+                    rm.rawMaterialId,
+                    Math.max(1, Number(e.target.value)),
+                  )
+                }
+              />
+
+              <button
+                type="button"
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition cursor-pointer"
+                onClick={() => removeMaterial(rm.rawMaterialId)}
+              >
+          Remove
+              </button>
+            </div>
+          );
+        })}
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
@@ -193,18 +268,27 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </div>
       )}
 
-      <button
-        disabled={
-          !form.code ||
-          !form.name ||
-          form.price <= 0 ||
-          form.rawMaterials.length === 0
-        }
-        className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-        type="submit"
-      >
-        {initialData ? "Update Product" : "Create Product"}
-      </button>
+      <div className="flex gap-3">
+        <button
+          className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+          type="submit"
+        >
+          {initialData ? "Update Product" : "Create Product"}
+        </button>
+
+        {initialData && (
+          <button
+            type="button"
+            onClick={() => {
+              setForm(buildFormState());
+              onFinish?.();
+            }}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition border cursor-pointer"
+          >
+      Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };

@@ -72,6 +72,6 @@ public class GeneralControllerAdvice {
   @ExceptionHandler(RawMaterialAlreadyExistsException.class)
   public ResponseEntity<String> handleRawMaterialAlreadyExists(
       RawMaterialAlreadyExistsException exception) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
   }
 }
