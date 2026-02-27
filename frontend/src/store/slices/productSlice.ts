@@ -1,10 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import type {
-  ProductResponseType,
-  ProductCreationType,
-} from "../../types/product";
 import * as productService from "../../service/productService";
+import type { ProductResponseType, ProductCreationType } from "../../types/product";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 interface ProductState {
@@ -63,8 +60,8 @@ export const deleteProduct = createAsyncThunk<
   try {
     await productService.deleteProduct(id);
     return id;
-  } catch (error: any) {
-    return rejectWithValue(error?.message ?? "Failed to delete product");
+  } catch (error: unknown) {
+    return rejectWithValue(getErrorMessage(error));
   }
 });
 
@@ -90,15 +87,11 @@ const productSlice = createSlice({
         state.items.push(action.payload);
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        const index = state.items.findIndex(
-          (item) => item.id === action.payload.id,
-        );
+        const index = state.items.findIndex((item) => item.id === action.payload.id);
         if (index !== -1) state.items[index] = action.payload;
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          (item) => item.id !== action.payload,
-        );
+        state.items = state.items.filter((item) => item.id !== action.payload);
       });
   },
 });
