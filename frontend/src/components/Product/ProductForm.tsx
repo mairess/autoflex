@@ -2,10 +2,7 @@ import React, { useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { createProduct, updateProduct } from "../../store/slices/productSlice";
-import type {
-  ProductRawMaterialFormType,
-  ProductResponseType,
-} from "../../types/product";
+import type { ProductRawMaterialFormType, ProductResponseType } from "../../types/product";
 
 interface ProductFormProps {
   initialData?: ProductResponseType;
@@ -161,7 +158,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div className="space-y-3">
 
-        {/* 🔎 Campo de busca */}
         <input
           type="text"
           placeholder="Search by name or code..."
@@ -170,7 +166,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
           className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
 
-        {/* 📦 Lista com scroll controlado */}
         <div className="max-h-48 overflow-y-auto border rounded-lg divide-y bg-white">
 
           {filteredMaterials.map((rm) => {
@@ -270,12 +265,27 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </div>
       )}
 
-      <button
-        className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-        type="submit"
-      >
-        {initialData ? "Update Product" : "Create Product"}
-      </button>
+      <div className="flex gap-3">
+        <button
+          className="bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+          type="submit"
+        >
+          {initialData ? "Update Product" : "Create Product"}
+        </button>
+
+        {initialData && (
+          <button
+            type="button"
+            onClick={() => {
+              setForm(buildFormState());
+              onFinish?.();
+            }}
+            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg transition"
+          >
+      Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };

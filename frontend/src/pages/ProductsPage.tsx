@@ -35,14 +35,12 @@ const ProductsPage: React.FC = () => {
         onFinish={() => setEditingProduct(null)}
       />
 
-      {/* 🔵 LISTAGEM MELHORADA */}
       <div className="grid gap-6">
         {items.map((product) => (
           <div
             key={product.id}
             className="border rounded-xl p-6 bg-gray-50 shadow-sm hover:shadow-md transition"
           >
-            {/* HEADER DO PRODUTO */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
               <div>
                 <p className="text-sm text-gray-500">
@@ -83,7 +81,6 @@ const ProductsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 🔵 RAW MATERIALS SECTION */}
             <div className="mt-5">
               <h3 className="text-sm font-semibold text-gray-600 mb-3">
                 Raw Materials Required
