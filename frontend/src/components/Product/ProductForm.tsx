@@ -74,7 +74,7 @@ function ProductForm({ initialData, onFinish }: ProductFormProps) {
     }
 
     if (!form.name.trim()) {
-      toast.error("Name is required");
+      toast.error("Name is required. Min. 3 characters ");
       return;
     }
 
