@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
+/**
+ * The type Product raw material creation dto.
+ */
 public record ProductRawMaterialCreationDto(
 
     @NotNull(message = "Raw material id is required")

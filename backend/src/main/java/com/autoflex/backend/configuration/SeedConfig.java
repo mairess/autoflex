@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * The type Seed config.
+ */
 @Configuration
 public class SeedConfig implements CommandLineRunner {
 
@@ -17,6 +20,13 @@ public class SeedConfig implements CommandLineRunner {
   private final RawMaterialRepository rawMaterialRepository;
   private final ProductRepository productRepository;
 
+  /**
+   * Instantiates a new Seed config.
+   *
+   * @param productRawMaterialRepository the product raw material repository
+   * @param rawMaterialRepository        the raw material repository
+   * @param productRepository            the product repository
+   */
   public SeedConfig(ProductRawMaterialRepository productRawMaterialRepository,
       RawMaterialRepository rawMaterialRepository, ProductRepository productRepository) {
     this.productRawMaterialRepository = productRawMaterialRepository;

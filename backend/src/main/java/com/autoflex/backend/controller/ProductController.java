@@ -68,19 +68,6 @@ public class ProductController {
   }
 
   /**
-   * Find by id product response dto.
-   *
-   * @param id the id
-   * @return the product response dto
-   * @throws ProductNotFoundException the product not found exception
-   */
-  @GetMapping("/{id}")
-  public ProductResponseDto findById(@PathVariable Long id)
-      throws ProductNotFoundException {
-    return ProductResponseDto.fromEntity(productService.findById(id));
-  }
-
-  /**
    * Update product response dto.
    *
    * @param id                 the id

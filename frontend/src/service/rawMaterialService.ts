@@ -6,11 +6,6 @@ export const getAllRawMaterials = async () => {
   return response.data;
 };
 
-export const getRawMaterialById = async (id: number) => {
-  const response =  await api.get<RawMaterialResponseType>(`/raw-materials/${id}`);
-  return response.data;
-};
-
 export const createRawMaterial = async (data: RawMaterialCreationType) => {
   const response =  await api.post<RawMaterialResponseType>("/raw-materials", data);
   return response.data;

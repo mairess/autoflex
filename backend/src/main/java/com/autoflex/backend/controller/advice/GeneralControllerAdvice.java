@@ -4,6 +4,7 @@ import com.autoflex.backend.exceptions.ValidationErrorResponse;
 import com.autoflex.backend.service.exception.NotFoundException;
 import com.autoflex.backend.service.exception.ProductAlreadyExistsException;
 import com.autoflex.backend.service.exception.RawMaterialAlreadyExistsException;
+import com.autoflex.backend.service.exception.RawMaterialInUseException;
 import java.util.List;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -72,6 +73,18 @@ public class GeneralControllerAdvice {
   @ExceptionHandler(RawMaterialAlreadyExistsException.class)
   public ResponseEntity<String> handleRawMaterialAlreadyExists(
       RawMaterialAlreadyExistsException exception) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+  }
+
+  /**
+   * Handle raw material in use exception response entity.
+   *
+   * @param exception the exception
+   * @return the response entity
+   */
+  @ExceptionHandler(RawMaterialInUseException.class)
+  public ResponseEntity<String> handleRawMaterialInUseException(
+      RawMaterialInUseException exception) {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
   }
 }

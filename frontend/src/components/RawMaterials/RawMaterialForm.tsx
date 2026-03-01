@@ -7,14 +7,17 @@ import type { RawMaterialCreationType, RawMaterialResponseType } from "../../typ
 interface RawMaterialFormProps {
   initialData?: RawMaterialResponseType;
   onFinish?: () => void;
+  error: string | null;
+  setError: (value: string | null) => void;
 }
 
 const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
   initialData,
   onFinish,
+  setError,
+  error,
 }) => {
   const dispatch = useAppDispatch();
-  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState<RawMaterialCreationType>(() => ({
     code: initialData?.code ?? "",
@@ -61,8 +64,8 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
         stockQuantity: 0,
       });
 
-    } catch (error) {
-      setError(String(error));
+    } catch (err) {
+      setError(String(err));
     }
   };
 

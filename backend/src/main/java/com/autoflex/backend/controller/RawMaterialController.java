@@ -5,6 +5,7 @@ import com.autoflex.backend.controller.dto.RawMaterialResponseDto;
 import com.autoflex.backend.entity.RawMaterial;
 import com.autoflex.backend.service.RawMaterialService;
 import com.autoflex.backend.service.exception.RawMaterialAlreadyExistsException;
+import com.autoflex.backend.service.exception.RawMaterialInUseException;
 import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -54,22 +55,6 @@ public class RawMaterialController {
   }
 
   /**
-   * Find by id raw material response dto.
-   *
-   * @param id the id
-   * @return the raw material response dto
-   * @throws RawMaterialNotFoundException the raw material not found exception
-   */
-  @GetMapping("/{id}")
-  public RawMaterialResponseDto findById(
-      @PathVariable Long id
-  ) throws RawMaterialNotFoundException {
-    return RawMaterialResponseDto.fromEntity(
-        rawMaterialService.findById(id)
-    );
-  }
-
-  /**
    * Find all list.
    *
    * @return the list
@@ -97,8 +82,7 @@ public class RawMaterialController {
       @PathVariable Long id,
       @RequestBody RawMaterialCreationDto dto
   ) throws RawMaterialNotFoundException, RawMaterialAlreadyExistsException {
-    RawMaterial updated =
-        rawMaterialService.update(id, dto.toEntity());
+    RawMaterial updated = rawMaterialService.update(id, dto.toEntity());
     return RawMaterialResponseDto.fromEntity(updated);
   }
 
@@ -107,12 +91,12 @@ public class RawMaterialController {
    *
    * @param id the id
    * @throws RawMaterialNotFoundException the raw material not found exception
+   * @throws RawMaterialInUseException    the raw material in use exception
    */
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void delete(
-      @PathVariable Long id
-  ) throws RawMaterialNotFoundException {
+  public void delete(@PathVariable Long id)
+      throws RawMaterialNotFoundException, RawMaterialInUseException {
     rawMaterialService.delete(id);
   }
 }

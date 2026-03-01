@@ -41,6 +41,30 @@ public class ProductService {
     this.rawMaterialService = rawMaterialService;
   }
 
+  private static Map<Long, BigDecimal> getDecimalStockMap(List<Product> products) {
+    Map<Long, BigDecimal> stockMap = new HashMap<>();
+
+    for (Product product : products) {
+      if (product.getRawMaterials() == null) {
+        continue;
+      }
+
+      for (ProductRawMaterial productRawMaterial : product.getRawMaterials()) {
+        if (productRawMaterial.getRawMaterial() == null) {
+          continue;
+        }
+
+        RawMaterial rawMaterial = productRawMaterial.getRawMaterial();
+
+        stockMap.putIfAbsent(
+            rawMaterial.getId(),
+            rawMaterial.getStockQuantity() == null ? BigDecimal.ZERO
+                : rawMaterial.getStockQuantity()
+        );
+      }
+    }
+    return stockMap;
+  }
 
   /**
    * Create product.
@@ -133,6 +157,7 @@ public class ProductService {
    * @throws ProductAlreadyExistsException the product already exists exception
    * @throws RawMaterialNotFoundException  the raw material not found exception
    */
+  @Transactional
   public Product update(Long id, ProductCreationDto productCreationDto)
       throws ProductNotFoundException, ProductAlreadyExistsException, RawMaterialNotFoundException {
 
@@ -237,31 +262,6 @@ public class ProductService {
     }
 
     return result;
-  }
-
-  private static Map<Long, BigDecimal> getDecimalStockMap(List<Product> products) {
-    Map<Long, BigDecimal> stockMap = new HashMap<>();
-
-    for (Product product : products) {
-      if (product.getRawMaterials() == null) {
-        continue;
-      }
-
-      for (ProductRawMaterial productRawMaterial : product.getRawMaterials()) {
-        if (productRawMaterial.getRawMaterial() == null) {
-          continue;
-        }
-
-        RawMaterial rawMaterial = productRawMaterial.getRawMaterial();
-
-        stockMap.putIfAbsent(
-            rawMaterial.getId(),
-            rawMaterial.getStockQuantity() == null ? BigDecimal.ZERO
-                : rawMaterial.getStockQuantity()
-        );
-      }
-    }
-    return stockMap;
   }
 
   private BigDecimal calculateMaxUnitsUsingStockMap(

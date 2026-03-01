@@ -7,22 +7,28 @@ import type { RawMaterialResponseType } from "../../types/rawMaterial";
 interface RawMaterialItemProps {
   rawMaterial: RawMaterialResponseType;
   onEdit: () => void;
+  setError: (value: string) => void;
 }
 
 const RawMaterialItem: React.FC<RawMaterialItemProps> = ({
   rawMaterial,
   onEdit,
+  setError,
 }) => {
   const dispatch = useAppDispatch();
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmed = confirm(
       `Are you sure you want to delete "${rawMaterial.name}"?`,
     );
 
     if (!confirmed) return;
 
-    dispatch(deleteRawMaterial(rawMaterial.id));
+    try {
+      await dispatch(deleteRawMaterial(rawMaterial.id)).unwrap();
+    } catch (error) {
+      setError(String(error));
+    }
   };
 
   return (

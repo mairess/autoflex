@@ -1,10 +1,12 @@
 package com.autoflex.backend.controller.dto;
 
 import com.autoflex.backend.entity.Product;
-import com.autoflex.backend.entity.ProductRawMaterial;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * The type Product response dto.
+ */
 public record ProductResponseDto(
     Long id,
     String code,
@@ -13,6 +15,12 @@ public record ProductResponseDto(
     List<ProductRawMaterialResponseDto> rawMaterials
 ) {
 
+  /**
+   * From entity product response dto.
+   *
+   * @param product the product
+   * @return the product response dto
+   */
   public static ProductResponseDto fromEntity(Product product) {
     return new ProductResponseDto(
         product.getId(),

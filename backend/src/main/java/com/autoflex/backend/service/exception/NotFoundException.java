@@ -1,5 +1,8 @@
 package com.autoflex.backend.service.exception;
 
+/**
+ * The type Not found exception.
+ */
 public abstract class NotFoundException extends Exception {
 
   /**

@@ -2,6 +2,9 @@ package com.autoflex.backend.controller.dto;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Production suggestion dto.
+ */
 public record ProductionSuggestionDto(
     Long productId,
     String productName,
@@ -9,5 +12,5 @@ public record ProductionSuggestionDto(
     BigDecimal quantityProduced,
     BigDecimal totalValue
 ) {
-  
+
 }

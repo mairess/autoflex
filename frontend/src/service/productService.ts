@@ -6,11 +6,6 @@ export const getAllProducts = async () => {
   return response.data;
 };
 
-export const getProductById = async (id: number) => {
-  const response = await api.get<ProductResponseType>(`/products/${id}`);
-  return response.data;
-};
-
 export const createProduct = async (data: ProductCreationType) => {
   const response = await api.post<ProductResponseType>("/products", data);
   return response.data;

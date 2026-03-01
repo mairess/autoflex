@@ -7,6 +7,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
+/**
+ * The type Raw material creation dto.
+ */
 public record RawMaterialCreationDto(
 
     @NotBlank(message = "Code is required")
@@ -22,6 +25,11 @@ public record RawMaterialCreationDto(
     BigDecimal stockQuantity
 ) {
 
+  /**
+   * To entity raw material.
+   *
+   * @return the raw material
+   */
   public RawMaterial toEntity() {
     return new RawMaterial(code, name, stockQuantity);
   }

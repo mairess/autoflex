@@ -3,6 +3,9 @@ package com.autoflex.backend.controller.dto;
 import com.autoflex.backend.entity.RawMaterial;
 import java.math.BigDecimal;
 
+/**
+ * The type Raw material response dto.
+ */
 public record RawMaterialResponseDto(
     Long id,
     String code,
@@ -10,6 +13,12 @@ public record RawMaterialResponseDto(
     BigDecimal stockQuantity
 ) {
 
+  /**
+   * From entity raw material response dto.
+   *
+   * @param rawMaterial the raw material
+   * @return the raw material response dto
+   */
   public static RawMaterialResponseDto fromEntity(RawMaterial rawMaterial) {
     return new RawMaterialResponseDto(
         rawMaterial.getId(),

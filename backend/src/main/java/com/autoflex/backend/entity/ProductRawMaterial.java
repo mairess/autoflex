@@ -31,6 +31,9 @@ public class ProductRawMaterial {
 
   private BigDecimal requiredQuantity;
 
+  /**
+   * Instantiates a new Product raw material.
+   */
   public ProductRawMaterial() {
   }
 
