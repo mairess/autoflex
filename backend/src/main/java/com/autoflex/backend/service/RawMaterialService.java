@@ -1,8 +1,10 @@
 package com.autoflex.backend.service;
 
 import com.autoflex.backend.entity.RawMaterial;
+import com.autoflex.backend.repository.ProductRawMaterialRepository;
 import com.autoflex.backend.repository.RawMaterialRepository;
 import com.autoflex.backend.service.exception.RawMaterialAlreadyExistsException;
+import com.autoflex.backend.service.exception.RawMaterialInUseException;
 import com.autoflex.backend.service.exception.RawMaterialNotFoundException;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -14,14 +16,18 @@ import org.springframework.stereotype.Service;
 public class RawMaterialService {
 
   private final RawMaterialRepository rawMaterialRepository;
+  private final ProductRawMaterialRepository productRawMaterialRepository;
 
   /**
    * Instantiates a new Raw material service.
    *
-   * @param rawMaterialRepository the raw material repository
+   * @param rawMaterialRepository        the raw material repository
+   * @param productRawMaterialRepository the product raw material repository
    */
-  public RawMaterialService(RawMaterialRepository rawMaterialRepository) {
+  public RawMaterialService(RawMaterialRepository rawMaterialRepository,
+      ProductRawMaterialRepository productRawMaterialRepository) {
     this.rawMaterialRepository = rawMaterialRepository;
+    this.productRawMaterialRepository = productRawMaterialRepository;
   }
 
   /**
@@ -91,11 +97,14 @@ public class RawMaterialService {
    *
    * @param id the id
    * @throws RawMaterialNotFoundException the raw material not found exception
+   * @throws RawMaterialInUseException    the raw material in use exception
    */
-  public void delete(Long id) throws RawMaterialNotFoundException {
+  public void delete(Long id) throws RawMaterialNotFoundException, RawMaterialInUseException {
+    if (productRawMaterialRepository.existsByRawMaterialId(id)) {
+      throw new RawMaterialInUseException();
+    }
     RawMaterial existing = this.findById(id);
     rawMaterialRepository.delete(existing);
   }
-
 
 }

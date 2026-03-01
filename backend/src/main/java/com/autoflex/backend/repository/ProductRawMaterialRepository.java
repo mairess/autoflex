@@ -10,4 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRawMaterialRepository extends JpaRepository<ProductRawMaterial, Long> {
 
+  /**
+   * Exists by raw material id boolean.
+   *
+   * @param rawMaterialId the raw material id
+   * @return the boolean
+   */
+  boolean existsByRawMaterialId(Long rawMaterialId);
+
 }
