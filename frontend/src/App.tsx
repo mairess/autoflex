@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
@@ -20,6 +21,8 @@ function App() {
       </main>
 
       <Footer />
+
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 }

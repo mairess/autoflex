@@ -8,7 +8,6 @@ import type { RawMaterialResponseType } from "../types/rawMaterial";
 
 function RawMaterialsPage() {
   const dispatch = useAppDispatch();
-  const [error, setError] = useState<string | null>(null);
   const { items } = useAppSelector((s) => s.rawMaterials);
   const [editingRawMaterial, setEditingRawMaterial] =
     useState<RawMaterialResponseType | null>(null);
@@ -27,8 +26,6 @@ function RawMaterialsPage() {
         key={editingRawMaterial?.id ?? "new"}
         initialData={editingRawMaterial ?? undefined}
         onFinish={() => setEditingRawMaterial(null)}
-        error={error}
-        setError={setError}
       />
 
       <div className="flex flex-col gap-6">
@@ -37,7 +34,6 @@ function RawMaterialsPage() {
             key={rm.id}
             rawMaterial={rm}
             onEdit={() => setEditingRawMaterial(rm)}
-            setError={setError}
           />
         ))}
       </div>

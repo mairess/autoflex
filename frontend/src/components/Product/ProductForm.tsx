@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { createProduct, updateProduct } from "../../store/slices/productSlice";
@@ -24,7 +25,6 @@ const buildFormState = (data?: ProductResponseType) => ({
 function ProductForm({ initialData, onFinish }: ProductFormProps) {
   const dispatch = useAppDispatch();
   const rawMaterials = useAppSelector((s) => s.rawMaterials.items);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState(() => buildFormState(initialData));
 
@@ -69,43 +69,41 @@ function ProductForm({ initialData, onFinish }: ProductFormProps) {
     event.preventDefault();
 
     if (!form.code.trim()) {
-      setError("Code is required");
+      toast.error("Code is required");
       return;
     }
 
     if (!form.name.trim()) {
-      setError("Name is required");
+      toast.error("Name is required");
       return;
     }
 
     if (form.price <= 0) {
-      setError("Price must be greater than zero");
+      toast.error("Price must be greater than zero");
       return;
     }
 
     if (form.rawMaterials.length === 0) {
-      setError("At least one raw material must be selected");
+      toast.error("At least one raw material must be selected");
       return;
     }
-
-    setError(null);
 
     try {
       if (initialData) {
         await dispatch(
           updateProduct({ id: initialData.id, data: form }),
         ).unwrap();
+        toast.success("Product updated successfully!");
       } else {
         await dispatch(createProduct(form)).unwrap();
+        toast.success("Product created successfully!");
       }
-
-      setError(null);
 
       onFinish?.();
       setForm(buildFormState());
 
     } catch (error) {
-      setError(String(error));
+      toast.error(String(error));
     }
   };
 
@@ -258,12 +256,6 @@ function ProductForm({ initialData, onFinish }: ProductFormProps) {
           );
         })}
       </div>
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-          {error}
-        </div>
-      )}
 
       <div className="flex gap-3">
         <button
